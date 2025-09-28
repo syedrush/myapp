@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Welcome, {{ user.get_full_name|default:user.username }}!</h1>
+{% if user.is_teacher %}
+<p><a href="{% url 'users:teacher_dashboard' %}" class="btn btn-secondary">Go to Teacher Dashboard</a></p>
+{% endif %}
+<h3>Your Quizzes</h3>
+<ul class="list-group mb-3">
+  {% for quiz in user.quiz_set.all %}
+  <li class="list-group-item">
+    <a href="{% url 'quizzes:detail' quiz.pk %}">{{ quiz.title }}</a>
+  </li>
+  {% empty %}
+  <li class="list-group-item">No quizzes yet.</li>
+  {% endfor %}
+</ul>
+<h3>Your Challenges</h3>
+<ul class="list-group">
+  {% for challenge in user.challenge_set.all %}
+  <li class="list-group-item">
+    <a href="{% url 'challenges:detail' challenge.pk %}">{{ challenge.title }}</a>
+  </li>
+  {% empty %}
+  <li class="list-group-item">No challenges assigned.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

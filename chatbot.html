@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>AI Chatbot</h2>
+<div id="chat-box" class="border rounded p-3 mb-3" style="height: 400px; overflow-y: scroll;">
+  <!-- Messages inserted here by JS -->
+</div>
+<form id="chat-form">
+  <div class="input-group">
+    <input type="text" id="chat-input" class="form-control" placeholder="Ask a question..." autocomplete="off" required>
+    <button class="btn btn-primary" type="submit">Send</button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+  const chatBox = document.getElementById('chat-box');
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+  const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+  const chatSocket = new WebSocket(wsScheme + '://' + window.location.host + '/ws/chatbot/');
+
+  chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    const message = data.response;
+    const messageElem = document.createElement('div');
+    messageElem.classList.add('alert', 'alert-info');
+    messageElem.textContent = 'Bot: ' + message;
+    chatBox.appendChild(messageElem);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  };
+
+  chatForm.onsubmit = function(e) {
+    e.preventDefault();
+    const message = chatInput.value;
+    const messageElem = document.createElement('div');
+    messageElem.classList.add('alert', 'alert-primary', 'text-end');
+    messageElem.textContent = 'You: ' + message;
+    chatBox.appendChild(messageElem);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    chatSocket.send(JSON.stringify({'message': message}));
+    chatInput.value = '';
+  };
+</script>
+{% endblock %}

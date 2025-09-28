@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Teacher Dashboard</h1>
+<h3>Your Quizzes</h3>
+<ul class="list-group mb-3">
+  {% for quiz in user.quiz_set.all %}
+  <li class="list-group-item">{{ quiz.title }}</li>
+  {% empty %}
+  <li class="list-group-item">No quizzes created yet.</li>
+  {% endfor %}
+</ul>
+<h3>Your Challenges</h3>
+<ul class="list-group mb-3">
+  {% for challenge in user.challenge_set.all %}
+  <li class="list-group-item">{{ challenge.title }}</li>
+  {% empty %}
+  <li class="list-group-item">No challenges assigned yet.</li>
+  {% endfor %}
+</ul>
+<h3>Your Notes</h3>
+<ul class="list-group">
+  {% for note in user.note_set.all %}
+  <li class="list-group-item">{{ note.title }}</li>
+  {% empty %}
+  <li class="list-group-item">No notes uploaded yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
